@@ -17,6 +17,10 @@ const Schema = new mongoose.Schema({
 
 const Fetch = mongoose.model('Fetch', Schema);
 
+app.get('/', (req, res) => {
+    res.send('Root directory');
+});
+
 app.post('/add', (req, res) => {
     const fetchData = new Fetch({
         listData: req.body.listData
@@ -32,7 +36,7 @@ app.post('/add', (req, res) => {
         });
 });
 
-app.get('/list', (req, res) => {
+app.get('/fetch', (req, res) => {
     Fetch.find()
         .then(result => {
             res.send(result);
@@ -41,10 +45,6 @@ app.get('/list', (req, res) => {
             console.log(err);
             res.status(500).send('Server Error');
         });
-});
-
-app.get('/', (req, res) => {
-    res.send('Root directory');
 });
 
 app.listen(port, () => {
