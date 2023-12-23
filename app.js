@@ -1,54 +1,52 @@
-const express = require('express')
-const app = express()
-var bodyParser = require('body-parser');
+const express = require('express');
+const app = express();
+const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
-const port = 3000
-const arr =[]
+const port = 3000;
+
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json())
+app.use(bodyParser.json());
+
 mongoose.connect('mongodb+srv://saurabh:sagrsh@cluster0.chvjyfn.mongodb.net/?retryWrites=true&w=majority')
     .then(() => console.log('Connected to MongoDB'))
     .catch(err => console.log(err.message));
-const listData = new mongoose.Schema({
-    listData:String
+
+const Schema = new mongoose.Schema({
+    listData: String
 });
-const ListData = mongoose.model('ListData', listData);
+
+const Fetch = mongoose.model('Fetch', Schema);
 
 app.post('/add', (req, res) => {
-    const listData = new ListData({
-        listData:req.body.listData
+    const fetchData = new Fetch({
+        listData: req.body.listData
     });
-    listData.save()
-    .then(result => {
-        res.send(result);
-    })
-    .catch(err => {
-        console.log(err);
-    });
-})
+
+    fetchData.save()
+        .then(result => {
+            res.send(result);
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).send('Server Error');
+        });
+});
+
 app.get('/list', (req, res) => {
-    ListData.find()
-    .then(result => {
-        res.send(result);
-    })
-    .catch(err => {
-        console.log(err);
-    });
-})
+    Fetch.find()
+        .then(result => {
+            res.send(result);
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).send('Server Error');
+        });
+});
+
 app.get('/', (req, res) => {
-    res.send('Hello World!');
-})
-app.get('/about', (req, res) => {
-    console.log(req.query);
-    res.send('About Page');
+    res.send('Root directory');
+});
 
-})
-
-app.post('/post-data', (req, res) => {
-    console.log(req.body);
-    res.send('Data Saved');
-
-})
 app.listen(port, () => {
-    console.log(`Example app listening on port ${port}`)
-})
+    console.log(`server app  listening on port ${port}`);
+});
